@@ -8,8 +8,6 @@ const TITLE = 'Ultralight'
 const DESCRIPTION = 'Simple Project Management'
 
 export const getServerSideProps = (context) => {
-  // const project = data.projects.find((p) => p.id === context.params.id)
-  // const list = project.lists.find((l) => l.id == context.params.listId)
   return {
     props: { listId: context.params.listId }
   }
