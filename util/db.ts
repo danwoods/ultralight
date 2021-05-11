@@ -2,6 +2,12 @@
 
 import PouchDB from 'pouchdb'
 
+export interface DBResponse {
+  id: string // "999cd9e176383104c3e7471f4f050d83"
+  ok: boolean //true
+  rev: string // "1-5cf2466ea9d2f2907e07ddb056381a56"
+}
+
 export interface DBDocument {
   _id: string
   _rev: string

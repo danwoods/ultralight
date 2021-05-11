@@ -4,8 +4,9 @@
 
 import useSWR from 'swr'
 import { getDB, DBDocument } from './db'
-import { useEffect } from 'react'
 import { mapDocs } from './mapDocs'
+import { useEffect } from 'react'
+import { useLists } from './useLists'
 
 type ProjectData = {
   name: string
@@ -83,10 +84,11 @@ type UseProjectConfig = {
 
 export const useProject = (id: string, config: UseProjectConfig = {}) => {
   const { data, mutate } = useSWR<Project>(
-    `${dbId}/${id}`,
+    () => (id ? `${dbId}/${id}` : null),
     () => db.get(id),
     config
   )
+  const { add: createList } = useLists()
 
   useEffect(() => {
     const changeListener = db
@@ -106,8 +108,23 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
   }
 
   const update = (partial) => {
-    db.post({ ...data, ...partial }).then(mutate)
+    db.post({ ...data, ...partial }).then((newProject) => {
+      mutate()
+      return newProject
+    })
   }
 
-  return { data, remove, update }
+  /**
+   * Add a list to the project
+   * @param {string} name List name
+   * @return {Promise<Project>} Updated project
+   */
+  const addList = (name: string) => {
+    createList(name).then((DBResp) => {
+      ;(data?.lists || []).push(DBResp.id)
+      return update(data)
+    })
+  }
+
+  return { data, remove, update, addList }
 }

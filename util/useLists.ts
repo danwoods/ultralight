@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { useEffect } from 'react'
 import { mapDocs } from './mapDocs'
-import { getDB, DBDocument } from './db'
+import { getDB, DBDocument, DBResponse } from './db'
 import { useListItems, ListItem } from './useListItems'
 
 type ListData = {
@@ -34,7 +34,7 @@ type UseListsConfig = {
  * @returns {Object[]} {data: Lists[], add: name => Promise}
  */
 export const useLists = (
-  ids: string[] | undefined,
+  ids?: string[] | undefined,
   config: UseListsConfig = {}
 ) => {
   const { data, mutate } = useSWR<List[]>(
@@ -63,8 +63,8 @@ export const useLists = (
     return () => changeListener.cancel()
   }, [])
 
-  const add = (name: string) => {
-    return db.post({ ...defaultList, name }).then((newList) => {
+  const add = (name: string): Promise<DBResponse> => {
+    return db.post({ ...defaultList, name }).then((newList: DBResponse) => {
       mutate()
       return newList
     })
@@ -120,5 +120,12 @@ export const useList = (id: string, config: UseListConfig = {}) => {
     })
   }
 
-  return { data, addItem, removeItem }
+  const updateItemOrder = (items: string[]) => {
+    return db.post({ ...data, items }).then((doc) => {
+      mutate()
+      return doc
+    })
+  }
+
+  return { data, addItem, removeItem, updateItemOrder }
 }
