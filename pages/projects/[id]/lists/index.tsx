@@ -14,6 +14,7 @@ import {
   List as ListType
 } from '../../../../util/useLists'
 import { mapDocs } from '../../../../util/mapDocs'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 export const getServerSideProps = async (context) => {
   const project = await projectDB.get(context.params.id)
@@ -29,6 +30,20 @@ export const getServerSideProps = async (context) => {
   }
 }
 
+const grid = 8
+
+const getItemStyle = (isDragging: boolean, draggableStyle: Object) => ({
+  userSelect: 'none',
+  background: isDragging ? 'lightgrey' : 'transparent',
+  ...draggableStyle
+})
+
+const getListStyle = (isDraggingOver: boolean) => ({
+  background: isDraggingOver ? 'transparent' : 'transparent',
+  padding: grid,
+  width: 250
+})
+
 export default function Lists({
   project: initialProject,
   lists: initialLists
@@ -36,12 +51,14 @@ export default function Lists({
   project: ProjectType
   lists: ListType[]
 }): JSX.Element {
-  const { data: project } = useProject(initialProject.id, {
+  const { data: project, addList } = useProject(initialProject.id, {
     initialData: initialProject
   })
   const { data: lists } = useLists(project?.lists, {
     initialData: initialLists
   })
+
+  console.log({ lists, project })
 
   return (
     <div className={styles.container}>
@@ -51,14 +68,36 @@ export default function Lists({
 
         <p className={styles.description}>{'Lists'}</p>
 
-        {(lists || []).map((list) => (
-          <div className={styles.grid} key={list._rev}>
-            <div>
-              <List id={list._id} titleIsLink={true} projectId={project?._id} />
-            </div>
-            <button>{'Add List'}</button>
-          </div>
-        ))}
+        <DragDropContext onDragEnd={console.log}>
+          <Droppable droppableId={project?._id + '/list'}>
+            {(provided, snapshot) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
+                {(lists || []).map((list, idx) => (
+                  <Draggable key={list._rev} draggableId={list._id} index={idx}>
+                    {(provided, snapshot) => (
+                      <List
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        key={list._rev}
+                        id={list._id}
+                        titleIsLink={true}
+                        projectId={project?._id}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <button onClick={() => addList('LIST ' + (lists?.length || '0'))}>
+          {'Add List'}
+        </button>
       </main>
 
       <footer className={styles.footer}>
