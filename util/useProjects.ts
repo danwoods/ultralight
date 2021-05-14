@@ -117,10 +117,11 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
   /**
    * Add a list to the project
    * @param {string} name List name
+   * @param {[string]} description List description
    * @return {Promise<Project>} Updated project
    */
-  const addList = (name: string) => {
-    createList(name).then((DBResp) => {
+  const addList = (name: string, description?: string) => {
+    createList(name, description).then((DBResp) => {
       ;(data?.lists || []).push(DBResp.id)
       return update(data)
     })

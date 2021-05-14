@@ -1,20 +1,21 @@
-import { Head } from '../../../../components/Page/Head'
+import * as React from 'react'
 import Image from 'next/image'
 import styles from '../../../../styles/Home.module.css'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { Head } from '../../../../components/Page/Head'
 import { List } from '../../../../components/List'
-import * as React from 'react'
-import {
-  db as projectDB,
-  useProject,
-  Project as ProjectType
-} from '../../../../util/useProjects'
+import { NewListForm } from '../../../../components/List/NewListForm'
 import {
   db as listsDB,
   useLists,
   List as ListType
 } from '../../../../util/useLists'
+import {
+  db as projectDB,
+  useProject,
+  Project as ProjectType
+} from '../../../../util/useProjects'
 import { mapDocs } from '../../../../util/mapDocs'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 export const getServerSideProps = async (context) => {
   const project = await projectDB.get(context.params.id)
@@ -58,8 +59,6 @@ export default function Lists({
     initialData: initialLists
   })
 
-  console.log({ lists, project })
-
   return (
     <div className={styles.container}>
       <Head />
@@ -95,9 +94,9 @@ export default function Lists({
             )}
           </Droppable>
         </DragDropContext>
-        <button onClick={() => addList('LIST ' + (lists?.length || '0'))}>
-          {'Add List'}
-        </button>
+        <NewListForm
+          create={(name, description) => addList(name, description)}
+        />
       </main>
 
       <footer className={styles.footer}>

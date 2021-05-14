@@ -63,11 +63,19 @@ export const useLists = (
     return () => changeListener.cancel()
   }, [])
 
-  const add = (name: string): Promise<DBResponse> => {
-    return db.post({ ...defaultList, name }).then((newList: DBResponse) => {
-      mutate()
-      return newList
-    })
+  /**
+   * Add a list
+   * @param {string} name List name
+   * @param {[string]} description List description
+   * @returns {Promise<DBResponse>} Database response
+   */
+  const add = (name: string, description?: string): Promise<DBResponse> => {
+    return db
+      .post({ ...defaultList, name, description: description || '' })
+      .then((newList: DBResponse) => {
+        mutate()
+        return newList
+      })
   }
 
   const remove = (list: List): Promise<DBResponse> => {
