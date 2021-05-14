@@ -3,10 +3,10 @@
 /** @file Hooks for working with Projects */
 
 import useSWR from 'swr'
-import { getDB, DBDocument } from './db'
+import { getDB, DBDocument, DBResponse } from './db'
 import { mapDocs } from './mapDocs'
 import { useEffect } from 'react'
-import { useLists } from './useLists'
+import { useLists, List } from './useLists'
 
 type ProjectData = {
   name: string
@@ -88,7 +88,7 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
     () => db.get(id),
     config
   )
-  const { add: createList } = useLists()
+  const { add: createList, remove: deleteList } = useLists()
 
   useEffect(() => {
     const changeListener = db
@@ -126,5 +126,22 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
     })
   }
 
-  return { data, remove, update, addList }
+  /**
+   * Remove a list from the project
+   * @param {Object} doc List
+   * @return {Promise<DBResponse>} Database response
+   */
+  const removeList = (doc: List): Promise<DBResponse> => {
+    if (!data) {
+      return Promise.reject('CANT_REMOVE_LIST_BEFORE_PROJECT_DATA_LOADED')
+    }
+    return deleteList(doc).then((DBResp: DBResponse) => {
+      const listsClone: string[] = [...(data?.lists || [])]
+      const listIdx = listsClone.findIndex((i) => i === doc._id)
+      listsClone.splice(listIdx, 1)
+      return db.post({ ...data, lists: listsClone }).then(() => DBResp)
+    })
+  }
+
+  return { data, remove, update, addList, removeList }
 }

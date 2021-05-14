@@ -9,11 +9,11 @@ const DESCRIPTION = 'Simple Project Management'
 
 export const getServerSideProps = (context) => {
   return {
-    props: { listId: context.params.listId }
+    props: { listId: context.params.listId, projectId: context.params.id }
   }
 }
 
-export default function ListComp({ listId }) {
+export default function ListComp({ listId, projectId }) {
   // const { data } = useList(listId)
   console.log({ listId })
   return (
@@ -22,7 +22,7 @@ export default function ListComp({ listId }) {
 
       <main className={styles.main}>
         <div>
-          <List id={listId} />
+          <List id={listId} projectId={projectId} />
         </div>
       </main>
 

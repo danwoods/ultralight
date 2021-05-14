@@ -70,7 +70,14 @@ export const useLists = (
     })
   }
 
-  return { data, add }
+  const remove = (list: List): Promise<DBResponse> => {
+    return db.post({ ...list, _deleted: true }).then((resp: DBResponse) => {
+      mutate()
+      return resp
+    })
+  }
+
+  return { data, add, remove }
 }
 
 type UseListConfig = {
