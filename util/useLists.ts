@@ -3,6 +3,9 @@ import { useEffect } from 'react'
 import { mapDocs } from './mapDocs'
 import { getDB, DBDocument, DBResponse } from './db'
 import { useListItems, ListItem } from './useListItems'
+import { logger } from '../util/logger'
+
+const log = logger('util/useLists.ts')
 
 type ListData = {
   name: string
@@ -37,6 +40,7 @@ export const useLists = (
   ids?: string[] | undefined,
   config: UseListsConfig = {}
 ) => {
+  log.debug('Called useLists', { ids, config })
   const { data, mutate } = useSWR<List[]>(
     () => (ids ? ['/lists/', ...ids] : null),
     () => db.allDocs({ keys: ids, include_docs: true }).then(mapDocs),
@@ -93,12 +97,23 @@ type UseListConfig = {
 }
 
 export const useList = (id: string, config: UseListConfig = {}) => {
-  const { data, mutate } = useSWR(
+  log.debug('Called useList', { id, config })
+  const { data, mutate, error } = useSWR(
     id ? `/lists/${id}` : null,
-    () => db.get(id),
+    () =>
+      db.get(id).then((resp) => {
+        return resp
+      }),
     config
   )
   const { add, remove } = useListItems()
+
+  log.debug('Data in useList', {
+    id,
+    data,
+    error,
+    key: id ? `/lists/${id}` : null
+  })
 
   useEffect(() => {
     const changeListener = db
