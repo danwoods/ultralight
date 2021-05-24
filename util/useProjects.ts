@@ -4,9 +4,12 @@
 
 import useSWR from 'swr'
 import { getDB, DBDocument, DBResponse } from './db'
+import { logger } from '../util/logger'
 import { mapDocs } from './mapDocs'
 import { useEffect } from 'react'
 import { useLists, List } from './useLists'
+
+const log = logger('util/useProjects.ts')
 
 type ProjectData = {
   name: string
@@ -83,6 +86,7 @@ type UseProjectConfig = {
 }
 
 export const useProject = (id: string, config: UseProjectConfig = {}) => {
+  log.debug('Called useProject', { id, config })
   const { data, mutate } = useSWR<Project>(
     () => (id ? `${dbId}/${id}` : null),
     () => db.get(id),
@@ -107,10 +111,10 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
     db.post({ ...data, _deleted: true }).then(mutate)
   }
 
-  const update = (partial) => {
-    db.post({ ...data, ...partial }).then((newProject) => {
+  const update = (partial: Project): Promise<DBResponse> => {
+    return db.post({ ...data, ...partial }).then((resp: DBResponse) => {
       mutate()
-      return newProject
+      return resp
     })
   }
 
@@ -121,7 +125,8 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
    * @return {Promise<Project>} Updated project
    */
   const addList = (name: string, description?: string) => {
-    createList(name, description).then((DBResp) => {
+    logger.debug('Called useProject.addList', { name, description })
+    return createList(name, description).then((DBResp) => {
       ;(data?.lists || []).push(DBResp.id)
       return update(data)
     })
