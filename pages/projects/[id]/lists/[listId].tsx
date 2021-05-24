@@ -1,28 +1,39 @@
 import Image from 'next/image'
+
 import styles from '../../../../styles/Home.module.css'
-import { List } from '../../../../components/List'
-import { useList } from '../../../../util/useLists'
 import { Head } from '../../../../components/Page/Head'
+import { List } from '../../../../components/List'
+import { db as itemDB } from '../../../../util/useListItems'
+import { db as listDB, useList } from '../../../../util/useLists'
+import { logger } from '../../../../util/logger'
+import { mapDocs } from '../../../../util/mapDocs'
 
-const TITLE = 'Ultralight'
-const DESCRIPTION = 'Simple Project Management'
+const log = logger('pages/.../lists/[listId].tsx')
 
-export const getServerSideProps = (context) => {
+export const getServerSideProps = async (context) => {
+  const list = await listDB.get(context.params.listId)
+  const items = await itemDB
+    .allDocs({
+      keys: list.items,
+      include_docs: true
+    })
+    .then(mapDocs)
+
   return {
-    props: { listId: context.params.listId, projectId: context.params.id }
+    props: { list: { ...list, items }, projectId: context.params.id }
   }
 }
 
-export default function ListComp({ listId, projectId }) {
+export default function ListComp({ listId, projectId, list }) {
   // const { data } = useList(listId)
-  console.log({ listId })
+  log.debug('Props', { listId, projectId, list })
   return (
     <div className={styles.container}>
       <Head />
 
       <main className={styles.main}>
         <div>
-          <List id={listId} projectId={projectId} />
+          <List id={listId} projectId={projectId} list={list} />
         </div>
       </main>
 
