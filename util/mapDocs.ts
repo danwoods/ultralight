@@ -12,7 +12,7 @@ interface RowsObject<DocType> {
 export function mapDocs<DocType>(
   data: RowsObject<DocType> | DocType[]
 ): DocType[] {
-  if (data.hasOwnProperty('rows')) {
+  if (data?.hasOwnProperty('rows')) {
     return data.rows.map((row: { doc: DocType }) => row.doc)
   } else {
     return data
