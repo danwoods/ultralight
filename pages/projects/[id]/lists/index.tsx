@@ -1,21 +1,23 @@
 import * as React from 'react'
-import Image from 'next/image'
 import styles from '../../../../styles/Home.module.css'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Head } from '../../../../components/Page/Head'
 import { List } from '../../../../components/List'
 import { NewListForm } from '../../../../components/List/NewListForm'
 import {
   db as listsDB,
+  useList,
   useLists,
   List as ListType
 } from '../../../../util/useLists'
+import { useListItems } from '../../../../util/useListItems'
 import {
   db as projectDB,
   useProject,
   Project as ProjectType
 } from '../../../../util/useProjects'
 import { mapDocs } from '../../../../util/mapDocs'
+import { db as itemsDB } from '../../../../util/useListItems'
+import { logger } from '../../../../util/logger'
 
 export const getServerSideProps = async (context) => {
   const project = await projectDB.get(context.params.id)
@@ -25,10 +27,46 @@ export const getServerSideProps = async (context) => {
       include_docs: true
     })
     .then(mapDocs)
-
+  const items = await itemsDB
+    .allDocs({
+      keys: lists.reduce((acc, cur) => acc.concat(cur.items), []),
+      include_docs: true
+    })
+    .then(mapDocs)
   return {
-    props: { project, lists }
+    props: { project, lists, items }
   }
+}
+
+type ListWrapperProps = {
+  listId: string
+  projectId: string
+  remove: () => void
+}
+
+const ListWrapper = ({ listId, projectId, remove }: ListWrapperProps) => {
+  const log = logger('pages/.../lists/index.js$ListWrapper')
+  const { data: list, addItem, removeItem, updateItemOrder } = useList(listId)
+  const { data: items } = useListItems(list?.items)
+
+  log.debug('', { listId, list, items })
+
+  return (
+    <List
+      key={listId + list?._rev}
+      titleIsLink={true}
+      projectId={projectId}
+      list={{
+        ...list,
+        items
+      }}
+      remove={remove}
+      addItem={addItem}
+      removeItem={removeItem}
+      updateItemOrder={updateItemOrder}
+      style={{ margin: '8px 0' }}
+    />
+  )
 }
 
 const grid = 8
@@ -47,17 +85,21 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 export default function Lists({
   project: initialProject,
-  lists: initialLists
+  lists: initialLists,
+  items
 }: {
   project: ProjectType
   lists: ListType[]
 }): JSX.Element {
-  const { data: project, addList } = useProject(initialProject.id, {
+  const log = logger('pages/../lists/index.js')
+  const { data: project, addList, removeList } = useProject(initialProject.id, {
     initialData: initialProject
   })
   const { data: lists } = useLists(project?.lists, {
     initialData: initialLists
   })
+
+  log.debug('Data', { project, initialProject, lists, initialLists, items })
 
   return (
     <div className={styles.container}>
@@ -67,50 +109,20 @@ export default function Lists({
 
         <p className={styles.description}>{'Lists'}</p>
 
-        <DragDropContext onDragEnd={console.log}>
-          <Droppable droppableId={project?._id + '/list'}>
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                {(lists || []).map((list, idx) => (
-                  <Draggable key={list._rev} draggableId={list._id} index={idx}>
-                    {(provided, snapshot) => (
-                      <List
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        key={list._rev}
-                        id={list._id}
-                        titleIsLink={true}
-                        projectId={project?._id}
-                      />
-                    )}
-                  </Draggable>
-                ))}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        {(lists || []).map((list) => (
+          <ListWrapper
+            key={list._rev}
+            listId={list._id}
+            projectId={project?._id || ''}
+            remove={() => removeList(list)}
+          />
+        ))}
+
         <NewListForm
+          style={{ width: 400 }}
           create={(name, description) => addList(name, description)}
         />
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }
