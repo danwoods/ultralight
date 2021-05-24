@@ -35,7 +35,11 @@ const Projects = ({ projects }: { projects: Project[] }): JSX.Element => {
 
         <div className={styles.grid}>
           {(data || []).map((project: Project) => (
-            <a href={`/projects/${project._id}`} className={styles.card}>
+            <a
+              href={`/projects/${project._id}`}
+              className={styles.card}
+              key={project._rev}
+            >
               <h2>{project.name}</h2>
               <p>{project.description}</p>
               <button
