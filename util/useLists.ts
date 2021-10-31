@@ -39,6 +39,7 @@ export const useLists = (
 ) => {
   const { data, mutate } = useSWR<List[]>(
     () => (ids ? ['/lists/', ...ids] : null),
+		// @ts-ignore
     () => db.allDocs({ keys: ids, include_docs: true }).then(mapDocs),
     config
   )
@@ -64,6 +65,7 @@ export const useLists = (
   }, [])
 
   const add = (name: string): Promise<DBResponse> => {
+		// @ts-ignore
     return db.post({ ...defaultList, name }).then((newList: DBResponse) => {
       mutate()
       return newList
@@ -90,6 +92,7 @@ export const useList = (id: string, config: UseListConfig = {}) => {
     () => db.get(id),
     config
   )
+	// @ts-ignore
   const { add, remove } = useListItems()
 
   useEffect(() => {
@@ -112,8 +115,11 @@ export const useList = (id: string, config: UseListConfig = {}) => {
 
   const addItem = (name: string): Promise<PouchDB.Core.Response> => {
     return add(name).then((doc) => {
+			// @ts-ignore
       const itemsClone = [...data?.items]
+			// @ts-ignore
       itemsClone.push(doc.id)
+			// @ts-ignore
       return db.post({ ...data, items: itemsClone }).then(() => doc)
     })
   }
@@ -123,11 +129,13 @@ export const useList = (id: string, config: UseListConfig = {}) => {
       const itemsClone: string[] = [...(data?.items || [])]
       const itemIdx = itemsClone.findIndex((i) => i === item._id)
       itemsClone.splice(itemIdx, 1)
+			// @ts-ignore
       return db.post({ ...data, items: itemsClone }).then(() => doc)
     })
   }
 
   const updateItemOrder = (items: string[]) => {
+			// @ts-ignore
     return db.post({ ...data, items }).then((doc) => {
       mutate()
       return doc

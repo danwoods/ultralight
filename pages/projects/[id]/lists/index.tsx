@@ -16,6 +16,7 @@ import {
 import { mapDocs } from '../../../../util/mapDocs'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
+// @ts-ignore
 export const getServerSideProps = async (context) => {
   const project = await projectDB.get(context.params.id)
   const lists = await listsDB
@@ -23,6 +24,7 @@ export const getServerSideProps = async (context) => {
       keys: project.lists,
       include_docs: true
     })
+	// @ts-ignore
     .then(mapDocs)
 
   return {
@@ -51,6 +53,7 @@ export default function Lists({
   project: ProjectType
   lists: ListType[]
 }): JSX.Element {
+	// @ts-ignore
   const { data: project, addList } = useProject(initialProject.id, {
     initialData: initialProject
   })

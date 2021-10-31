@@ -40,6 +40,7 @@ type Config = {
 export const useListItems = (ids: string[], config: Config | undefined) => {
   const { data, mutate } = useSWR<ListItem[]>(
     () => [dbId, ...ids],
+		// @ts-ignore
     () => db.allDocs({ keys: ids, include_docs: true }).then(mapDocs),
     config
   )
@@ -63,6 +64,7 @@ export const useListItems = (ids: string[], config: Config | undefined) => {
   }, [])
 
   const add = (name: string): Promise<ListItem> => {
+		// @ts-ignore
     return db.post({ ...defaultListItem, name }).then((doc: ListItem) => {
       mutate()
       return doc
@@ -74,6 +76,7 @@ export const useListItems = (ids: string[], config: Config | undefined) => {
   }
 
   const update = (partial: ListItem): Promise<ListItem> => {
+		// @ts-ignore
     return db.post(partial).then((doc) => {
       mutate()
       return doc

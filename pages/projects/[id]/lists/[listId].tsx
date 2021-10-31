@@ -7,12 +7,14 @@ import { Head } from '../../../../components/Page/Head'
 const TITLE = 'Ultralight'
 const DESCRIPTION = 'Simple Project Management'
 
+// @ts-ignore
 export const getServerSideProps = (context) => {
   return {
     props: { listId: context.params.listId, projectId: context.params.id }
   }
 }
 
+// @ts-ignore
 export default function ListComp({ listId, projectId }) {
   // const { data } = useList(listId)
   console.log({ listId })

@@ -10,11 +10,14 @@ interface RowsObject<DocType> {
  * @returns Object[]
  */
 export function mapDocs<DocType>(
+	// @ts-ignore
   data: RowsObject<DocType> | DocType[]
 ): DocType[] {
   if (data.hasOwnProperty('rows')) {
+		// @ts-ignore
     return data.rows.map((row: { doc: DocType }) => row.doc)
   } else {
+		// @ts-ignore
     return data
   }
 }

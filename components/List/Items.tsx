@@ -48,6 +48,7 @@ export const Items = ({
 }: Props) => {
   const [items, setItems] = useState(propsItems)
 
+	// @ts-ignore
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -81,8 +82,10 @@ export const Items = ({
                     {...provided.dragHandleProps}
                     key={item._rev + '>li'}
                     // style={{ minWidth: 400 }}
+										// @ts-ignore
                     style={getItemStyle(
                       snapshot.isDragging,
+										// @ts-ignore
                       provided.draggableProps.style
                     )}
                     onClick={() =>
