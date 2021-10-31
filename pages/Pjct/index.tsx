@@ -57,7 +57,9 @@ export const Pjct = () => {
       {'Projects V2'}
       <ol>
         {projects.map((p) => (
+          // @ts-ignore
           <li key={p.id}>
+            {/* @ts-ignore */}
             <Link href={`/projects/${p.id}`}>
               <a>{p.name}</a>
             </Link>
