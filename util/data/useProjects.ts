@@ -32,12 +32,14 @@ export const useProjects = (): ReturnValue => {
       getDocs(collection(db, dbId))
         .then((snapshot) => {
           console.log('Snapshot', snapshot)
+          // @ts-ignore
           const pjts = []
           snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             console.log(doc.id, ' => ', doc.data())
             pjts.push({ id: doc.id, ...doc.data() })
           })
+          // @ts-ignore
           setProjects(pjts)
         })
         .catch((error) => {
