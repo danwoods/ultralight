@@ -9,6 +9,7 @@ export const List = () => {
   const { userId } = useAuth()
   const router = useRouter()
   const { projectId } = router.query
+  // @ts-ignore
   const { data: lists } = useLists(userId, projectId)
 
   return (
