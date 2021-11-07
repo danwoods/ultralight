@@ -3,7 +3,7 @@
 import '../../components/Auth/init'
 import { useCollection } from './useCollection'
 
-type ProjectData = {
+type ListData = {
   id: string
   name: string
 }
@@ -11,14 +11,17 @@ type ProjectData = {
 /** Project database */
 
 type ReturnValue = {
-  data: ProjectData[]
+  data: ListData[]
 }
 
 /**
- * Hook to work with Projects
+ * Hook to work with Lists
  * @param {Object} config Config object for useSWR
  * @returns {Object} {data: Projects[], add: name => Promise, remove: id => Promise}
  */
-export const useProjects = (userId: string | null | undefined): ReturnValue => {
-  return useCollection<ProjectData>(`Users/${userId}/Projects`)
+export const useLists = (
+  userId: string | null | undefined,
+  projectId: string | null | undefined
+): ReturnValue => {
+  return useCollection<ListData>(`Users/${userId}/Projects/${projectId}/Lists`)
 }
