@@ -1,56 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import '../../components/Auth/init'
-import { getFirestore } from 'firebase/firestore'
-import { collection, addDoc, getDocs } from 'firebase/firestore'
 import Link from 'next/link'
 import { useProjects } from '../../util/data/useProjects'
-
-// import '../../util/database'
+import { useAuth } from '../../util/auth/useAuth'
+import { withRequireAuth } from '../../util/auth/RequireAuthHOC'
 
 export const Pjct = () => {
-  const { data: projects } = useProjects()
-  // useEffect(() => {
-  //   const db = getFirestore()
-
-  //   try {
-  //     addDoc(collection(db, 'Projects'), {
-  //       first: 'Ada',
-  //       last: 'Lovelace',
-  //       born: 1815
-  //     })
-  //       .then((docRef) => {
-  //         console.log('Document written with ID: ', docRef.id)
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error adding document: ', error)
-  //       })
-  //   } catch (e) {
-  //     console.error('Error adding document: ', e)
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   const db = getFirestore()
-
-  //   try {
-  //     getDocs(collection(db, 'Projects'))
-  //       .then((snapshot) => {
-  //         console.log('Snapshot', snapshot)
-  //         const pjts = []
-  //         snapshot.forEach((doc) => {
-  //           // doc.data() is never undefined for query doc snapshots
-  //           console.log(doc.id, ' => ', doc.data())
-  //           pjts.push({ id: doc.id, ...doc.data() })
-  //         })
-  //         setProjects(pjts)
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error adding document: ', error)
-  //       })
-  //   } catch (e) {
-  //     console.error('Error adding document: ', e)
-  //   }
-  // }, [])
+  const { userId } = useAuth()
+  const { data: projects } = useProjects(userId)
 
   return (
     <div>
@@ -70,4 +27,4 @@ export const Pjct = () => {
   )
 }
 
-export default Pjct
+export default withRequireAuth(Pjct)
