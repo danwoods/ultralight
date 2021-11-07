@@ -25,6 +25,7 @@ export const AuthProvider = ({
         // Signed in
         const user = userCredential.user
         setUserId(user.uid)
+        // @ts-ignore
         setToken(user.accessToken)
         router.push('/users/' + user.uid)
         // ...
