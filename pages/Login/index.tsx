@@ -1,6 +1,7 @@
 /** @file Login Page */
 import '../../components/Auth/init'
 import 'firebaseui/dist/firebaseui.css'
+import Button from '../../components/Button'
 import React, { useState } from 'react'
 import TextInput from '../../components/Inputs/Text'
 import log from '../../util/logger'
@@ -24,7 +25,7 @@ export const Login = () => {
 
   return (
     <div className="w-full p-20">
-      <h1 className={'text-4xl'}>Login</h1>
+      <h1>Login</h1>
       <div className="flex flex-col w-10/12 mx-auto mt-52">
         <TextInput
           value={email}
@@ -39,14 +40,13 @@ export const Login = () => {
           type={'password'}
         />
 
-        <button
+        <Button
           disabled={isProcessingLogin}
           title="Click to log in"
           onClick={handleLogin}
-          className="m-8 mt-1 ml-auto p-5 bg-primary hover:bg-primary-dark disabled:bg-primary-light text-white font-bold py-2 rounded"
         >
           Login
-        </button>
+        </Button>
       </div>
     </div>
   )

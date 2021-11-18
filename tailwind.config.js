@@ -1,12 +1,12 @@
 const colors = require('tailwindcss/colors')
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false,
   theme: {
     colors: {
       ...colors,
-      // Build your palette here
       transparent: 'transparent',
       current: 'currentColor',
       primary: {
@@ -24,5 +24,17 @@ module.exports = {
   variants: {
     extend: {}
   },
-  plugins: []
+  plugins: [
+    plugin(function ({ addBase, theme }) {
+      addBase({
+        // Headings
+        h1: { fontSize: theme('fontSize.5xl') },
+        h2: { fontSize: theme('fontSize.4xl') },
+        h3: { fontSize: theme('fontSize.3xl') },
+        h4: { fontSize: theme('fontSize.2xl') },
+        h5: { fontSize: theme('fontSize.1xl') },
+        h6: { fontSize: theme('fontSize.lg') }
+      })
+    })
+  ]
 }
