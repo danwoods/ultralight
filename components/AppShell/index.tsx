@@ -1,7 +1,11 @@
 import React from 'react'
 import Header from './Header'
 
-const AppShell = ({ children }) => {
+type Props = {
+  children: React.ReactNode
+}
+
+const AppShell = ({ children }: Props) => {
   return (
     <div className="min-h-screen px-2 flex flex-col justify-center items-center h-full max-h-screen overflow-hidden">
       <Header />
