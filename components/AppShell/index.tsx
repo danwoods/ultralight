@@ -3,9 +3,9 @@ import Header from './Header'
 
 const AppShell = ({ children }) => {
   return (
-    <div className="min-h-screen px-2 flex flex-col justify-center items-center h-full">
+    <div className="min-h-screen px-2 flex flex-col justify-center items-center h-full max-h-screen overflow-hidden">
       <Header />
-      <main className="py-20 flex flex-1 flex-col justify-center items-center">
+      <main className="py-20 flex flex-1 flex-col justify-center items-center w-full px-2 mt-16">
         {children}
       </main>
     </div>
