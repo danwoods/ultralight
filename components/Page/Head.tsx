@@ -6,10 +6,10 @@ export const TITLE = 'Ultralight'
 export const DESCRIPTION = 'Simple Project Management'
 
 /** Document `<head />` tag */
-export const Head = () => (
+export const Head = ({ title, description }) => (
   <NextHead>
-    <title>{TITLE}</title>
-    <meta name="description" content={DESCRIPTION} />
+    <title>{title || TITLE}</title>
+    <meta name="description" content={description || DESCRIPTION} />
     <link rel="icon" href="/favicon.ico" />
   </NextHead>
 )
