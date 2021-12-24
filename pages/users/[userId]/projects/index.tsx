@@ -19,7 +19,6 @@ export const Projects = () => {
       {'Projects'}
       <ol>
         {projects.map((p) => (
-          // @ts-ignore
           <li key={p.id}>
             <Link href={`/users/${userId}/projects/${p.id}`}>
               <a>{p.name}</a>

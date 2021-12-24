@@ -15,7 +15,7 @@ export const Lists = () => {
   const { userId } = useAuth()
   const router = useRouter()
   const { projectId } = router.query
-  const { data: lists } = useLists(userId, projectId)
+  const { data: lists } = useLists(userId, String(projectId))
 
   return (
     <div>
