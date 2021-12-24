@@ -1,11 +1,41 @@
-/** @file Hooks for working with Google FireStore Collections */
+/** @file Hook for working with Google FireStore Collections */
+
 import '../../components/Auth/init'
 import { getFirestore } from 'firebase/firestore'
-import { collection, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  updateDoc
+} from 'firebase/firestore'
 import { useEffect, useState } from 'react'
+import { log } from '../logger'
 
-interface Document {
-  id: string
+/**
+ * Document reference to Object with doc data and ID
+ * @param doc Document reference
+ * @returns Doc data + 'id' property
+ */
+const mapDocs = <Data extends DocumentData>(
+  doc: DocumentSnapshot<Data>
+): Data & { id: string } => {
+  const data = doc.data()
+
+  return {
+    id: doc.id,
+    ...data
+  }
+}
+
+type UseCollectionReturnValue<CollectionData> = {
+  data: CollectionData[]
+  add: (arg0: Omit<CollectionData, 'id'>) => Promise<CollectionData>
+  remove: (arg0: string) => Promise<void>
 }
 
 /**
@@ -13,11 +43,15 @@ interface Document {
  * @param {Object} config Config object for useSWR
  * @returns {Object} {data: Projects[], add: name => Promise, remove: id => Promise}
  */
-export const useCollection = <CollectionData extends Document>(
+export const useCollection = <CollectionData extends DocumentData>(
   id: string | null | undefined
-): { data: CollectionData[] } => {
-  const [documents, setDocuments] = useState<CollectionData[]>([])
+): UseCollectionReturnValue<CollectionData> => {
+  // Data /////////////////////////////////////////////////////////////////////
 
+  const [documents, setDocuments] = useState<CollectionData[]>([])
+  const [flipBit, setFlipBit] = useState(false)
+
+  // Load data when db ID changes
   useEffect(() => {
     if (id) {
       const db = getFirestore()
@@ -25,25 +59,103 @@ export const useCollection = <CollectionData extends Document>(
       try {
         getDocs(collection(db, id))
           .then((snapshot) => {
-            console.log('Snapshot', snapshot)
-            // @ts-ignore
-            const docs: CollectionData[] = []
+            log.debug('Snapshot', snapshot)
+
+            const docs: QueryDocumentSnapshot<CollectionData>[] = []
+
             snapshot.forEach((doc) => {
-              // @ts-ignore
-              docs.push({ id: doc.id, ...doc.data() })
+              docs.push(doc)
             })
-            setDocuments(docs)
+
+            setDocuments(
+              docs
+                .map((d) => mapDocs<CollectionData>(d))
+                .filter((d) => !d.isDeleted)
+            )
           })
           .catch((error) => {
-            console.error('Error adding document: ', error)
+            log.error('Error adding document: ', error)
           })
       } catch (e) {
-        console.error('Error adding document: ', e)
+        log.error('Error adding document: ', e)
       }
     }
-  }, [id])
+  }, [id, flipBit])
+
+  // Listen to changes in data
+  useEffect(() => {
+    const db = getFirestore()
+
+    const unlistenArray =
+      (id &&
+        documents.map((document) => {
+          return onSnapshot(doc(db, id, document.id), (doc) => {
+            log.debug('Current data: ', doc.data(), doc)
+            const data = doc.data()
+            if (typeof data === 'undefined') {
+              setDocuments(documents.filter((d) => d.id !== doc.id))
+            } else {
+              setDocuments(
+                documents.map((d) => {
+                  if (d.id === doc.id) {
+                    return {
+                      ...d,
+                      ...data
+                    }
+                  }
+                  return d
+                })
+              )
+            }
+          })
+        })) ||
+      []
+
+    return () => {
+      unlistenArray.forEach((unlisten) => unlisten())
+    }
+  }, [id, documents.map((doc) => doc.id).join('+')])
+
+  // Add //////////////////////////////////////////////////////////////////////
+
+  /**
+   * Add an item to a collection
+   * @param {Object} newDoc Document to add
+   * @returns {Promise<DocumentReference<CollectionData>>}
+   */
+  const add = (
+    newDoc: Omit<CollectionData, 'id'>
+  ): ReturnType<typeof addDoc> => {
+    if (id) {
+      const db = getFirestore()
+      return addDoc(collection(db, id), newDoc).then((doc) => {
+        setFlipBit(!flipBit)
+        return doc
+      })
+    } else {
+      const er = new Error('TRYING_TO_ADD_WITHOUT_ID')
+      er.doc = newDoc
+      throw er
+    }
+  }
+
+  // Remove ///////////////////////////////////////////////////////////////////
+
+  /**
+   * Remove an item from a collection
+   * @param {string} docId Document ID to remove
+   * @returns {Promise<undefined>}
+   */
+  const remove = (docId: string) => {
+    const db = getFirestore()
+    return updateDoc(doc(db, id, docId), { isDeleted: true }).then(() => {
+      setFlipBit(!flipBit)
+    })
+  }
 
   return {
-    data: documents
+    data: documents,
+    add,
+    remove
   }
 }
