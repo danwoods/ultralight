@@ -26,7 +26,7 @@ export const useLists = (
 
 type UseListItemsReturnValue = {
   data: ListItem[]
-  add: (arg0: ListItem) => Promise<ListItem>
+  add: (arg0: Omit<ListItem, 'id'>) => Promise<ListItem>
 }
 
 /**
