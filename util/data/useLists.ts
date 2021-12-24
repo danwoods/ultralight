@@ -38,7 +38,7 @@ export const useListItems = (
   userId: string | null | undefined,
   projectId: string | null | undefined,
   listId: string | null | undefined
-): UseListItemsReturnValue => {
+) => {
   return useCollection<ListItem>(
     `Users/${userId}/Projects/${projectId}/Lists/${listId}/Items`
   )
