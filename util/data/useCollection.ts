@@ -26,6 +26,7 @@ const mapDocs = <Data extends DocumentData>(
 ): Data & { id: string } => {
   const data = doc.data()
 
+  // @ts-ignore
   return {
     id: doc.id,
     ...data
@@ -64,6 +65,7 @@ export const useCollection = <CollectionData extends DocumentData>(
             const docs: QueryDocumentSnapshot<CollectionData>[] = []
 
             snapshot.forEach((doc) => {
+              // @ts-ignore
               docs.push(doc)
             })
 
@@ -134,6 +136,7 @@ export const useCollection = <CollectionData extends DocumentData>(
       })
     } else {
       const er = new Error('TRYING_TO_ADD_WITHOUT_ID')
+      // @ts-ignore
       er.doc = newDoc
       throw er
     }
@@ -148,6 +151,7 @@ export const useCollection = <CollectionData extends DocumentData>(
    */
   const remove = (docId: string) => {
     const db = getFirestore()
+    // @ts-ignore
     return updateDoc(doc(db, id, docId), { isDeleted: true }).then(() => {
       setFlipBit(!flipBit)
     })
@@ -155,6 +159,7 @@ export const useCollection = <CollectionData extends DocumentData>(
 
   return {
     data: documents,
+    // @ts-ignore
     add,
     remove
   }
