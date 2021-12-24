@@ -26,7 +26,11 @@ export const List = () => {
   const { userId } = useAuth()
   const router = useRouter()
   const { projectId, listId } = router.query
-  const { data: items, add, remove } = useListItems(userId, projectId, listId)
+  const { data: items, add, remove } = useListItems(
+    userId,
+    String(projectId),
+    String(listId)
+  )
   const [newName, setNewName] = useState('')
 
   return (
