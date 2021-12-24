@@ -1,33 +1,28 @@
+/** @file Project page */
+
 import React from 'react'
 import Link from 'next/link'
-import { useLists } from '../../../../../util/data/useLists'
 import { useAuth } from '../../../../../util/auth/useAuth'
 import { withRequireAuth } from '../../../../../util/auth/RequireAuthHOC'
 import { useRouter } from 'next/router'
 
-export const List = () => {
+/**
+ * Page for a project
+ * @returns {JSX.Element} Page for a project
+ */
+export const Project = () => {
   const { userId } = useAuth()
   const router = useRouter()
   const { projectId } = router.query
-  // @ts-ignore
-  const { data: lists } = useLists(userId, projectId)
 
   return (
     <div>
-      {'Lists'}
-      <ol>
-        {lists.map((l) => (
-          // @ts-ignore
-          <li key={l.id}>
-            {/* @ts-ignore */}
-            <Link href={`users/${userId}/projects/${projectId}/lists/${l.id}`}>
-              <a>{l.name}</a>
-            </Link>
-          </li>
-        ))}
-      </ol>
+      {'Project'}
+      <Link href={`/users/${userId}/projects/${projectId}/lists`}>
+        <a>{'Lists'}</a>
+      </Link>
     </div>
   )
 }
 
-export default withRequireAuth(List)
+export default withRequireAuth(Project)
