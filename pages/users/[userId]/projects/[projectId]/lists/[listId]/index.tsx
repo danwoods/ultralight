@@ -1,13 +1,14 @@
 /** @file Page for a single List */
 
 import React, { useState } from 'react'
-import { useListItems } from '../../../../../../../util/data/useLists'
+import { useLists, useListItems } from '../../../../../../../util/data/useLists'
 import { useAuth } from '../../../../../../../util/auth/useAuth'
 import { withRequireAuth } from '../../../../../../../util/auth/RequireAuthHOC'
 import { useRouter } from 'next/router'
 import { createItem } from '../../../../../../../util/data/list/item'
 import { sortBy } from '../../../../../../../util/array'
-import { ListItem } from '../../../../../../../util/data/list/item'
+import { ListItem, Item } from '../../../../../../../util/data/list/item'
+import { Button } from '../../../../../../../components/Button'
 
 /**
  * Sort list items by `sortOrder`
@@ -18,6 +19,35 @@ import { ListItem } from '../../../../../../../util/data/list/item'
 const sortBySortOrder = (a: ListItem, b: ListItem) =>
   sortBy<ListItem>(a, b, 'sortOrder')
 
+type AddItemInputProps = {
+  onAdd: (name: string) => Promise<any>
+}
+
+const AddItemInput = (props: AddItemInputProps) => {
+  const [newItemName, setNewItemName] = useState('')
+
+  const onAddClick = () =>
+    props.onAdd(newItemName).then(() => setNewItemName(''))
+
+  return (
+    <div className="flex items-center rounded-md">
+      <div className="pl-2 flex w-full">
+        <input
+          className="w-full rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-2"
+          id="search"
+          onChange={(e) => setNewItemName(e.target.value)}
+          placeholder="Add"
+          type="text"
+          value={newItemName}
+        />
+        <Button className={'p-2 m-0'} onClick={onAddClick}>
+          {'Add'}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 /**
  * Page for a single list
  * @returns {JSX.Element} Page for a single list
@@ -26,36 +56,34 @@ export const List = () => {
   const { userId } = useAuth()
   const router = useRouter()
   const { projectId, listId } = router.query
+  const { data: lists } = useLists(userId, String(projectId))
   const { data: items, add, remove } = useListItems(
     userId,
     String(projectId),
     String(listId)
   )
-  const [newName, setNewName] = useState('')
+
+  const list = lists.find((l) => l.id === listId)
 
   return (
-    <div>
-      {'List'}
-      <ol>
+    <div className={'bg-white shadow-md rounded-lg px-3 py-2 mb-4'}>
+      <h1
+        className={'block text-gray-700 text-lg font-semibold py-2 px-2'}
+      >{`List: ${list?.name || ''}`}</h1>
+      <ol className="py-3 text-sm">
         {items.sort(sortBySortOrder).map((l) => (
-          <li key={l.id + l.sortOrder}>
-            {l.name}{' '}
-            <button title={'Delete'} onClick={() => remove(l.id)}>
-              {'x'}
-            </button>
-          </li>
+          <Item
+            Item={l}
+            key={l.id + l.sortOrder}
+            onDelete={() => remove(l.id)}
+          />
         ))}
       </ol>
-      <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-      <button
-        onClick={() =>
-          add(
-            createItem({ name: newName, sortOrder: items.length || 0 })
-          ).then(() => setNewName(''))
+      <AddItemInput
+        onAdd={(name: string) =>
+          add(createItem({ name: name, sortOrder: items.length || 0 }))
         }
-      >
-        {'Add'}
-      </button>
+      />
     </div>
   )
 }
