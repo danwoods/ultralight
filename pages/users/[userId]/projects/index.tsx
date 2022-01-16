@@ -18,14 +18,14 @@ const AddItemInput = (props: AddItemInputProps) => {
     props.onAdd(newItemName).then(() => setNewItemName(''))
 
   return (
-    <div className="flex items-center rounded-md">
-      <div className="pl-2 flex w-full">
+    <div className='flex items-center rounded-md'>
+      <div className='pl-2 flex w-full'>
         <input
-          className="w-full rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-2"
-          id="search"
+          className='w-full rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-2'
+          id='search'
           onChange={(e) => setNewItemName(e.target.value)}
-          placeholder="Add"
-          type="text"
+          placeholder='Add'
+          type='text'
           value={newItemName}
         />
         <Button className={'p-2 m-0'} onClick={onAddClick}>

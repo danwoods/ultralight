@@ -25,10 +25,10 @@ export const Login = () => {
   }
 
   return (
-    <div className="w-full p-20">
+    <div className='w-full p-20'>
       <Head title={`${TITLE} > Login`} />
       <h1>Login</h1>
-      <div className="flex flex-col w-10/12 mx-auto lg:mt-52 mt-24">
+      <div className='flex flex-col w-10/12 mx-auto lg:mt-52 mt-24'>
         <TextInput
           value={email}
           onChange={(newEmail) => setEmail(newEmail)}
@@ -44,7 +44,7 @@ export const Login = () => {
 
         <Button
           disabled={isProcessingLogin}
-          title="Click to log in"
+          title='Click to log in'
           onClick={handleLogin}
         >
           Login

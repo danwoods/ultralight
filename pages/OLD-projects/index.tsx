@@ -49,7 +49,7 @@ const Projects = ({ projects }: { projects: Project[] }): JSX.Element => {
             </a>
           ))}
         </div>
-				{ /* @ts-ignore */ }
+        {/* @ts-ignore */}
         <button onClick={() => add('Project ' + data.length)}>
           {'New Project'}
         </button>

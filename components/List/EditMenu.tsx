@@ -32,7 +32,7 @@ export const EditMenu = ({ listId, remove }: Props): JSX.Element => {
     <Fragment>
       <IconButton
         aria-controls={`${listId}-edit-menu`}
-        aria-haspopup="true"
+        aria-haspopup='true'
         aria-label={'edit'}
         onClick={handleClick}
       >
