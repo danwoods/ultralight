@@ -81,7 +81,13 @@ export const List = () => {
       </ol>
       <AddItemInput
         onAdd={(name: string) =>
-          add(createItem({ name: name, sortOrder: items.length || 0 }))
+          add(
+            createItem({
+              name: name,
+              sortOrder: items.length || 0,
+              parentId: [userId, String(projectId)].join('/')
+            })
+          )
         }
       />
     </div>

@@ -8,6 +8,7 @@ export interface ListItem {
   isDeleted: boolean
   name: string
   sortOrder: number
+  parentId: string
 }
 
 /**
@@ -22,7 +23,8 @@ export const createItem = (
   isComplete: item.isComplete || false,
   isDeleted: item.isDeleted || false,
   name: item.name || '',
-  sortOrder: item.sortOrder || 0
+  sortOrder: item.sortOrder || 0,
+  parentId: item.parentId || ''
 })
 
 type Props = {
