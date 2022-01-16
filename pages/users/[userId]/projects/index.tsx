@@ -59,6 +59,7 @@ export const Projects = () => {
         onAdd={(name: string) =>
           add({
             name: name,
+            // @ts-ignore
             sortOrder: projects.length || 0,
             parentId: userId
           })
