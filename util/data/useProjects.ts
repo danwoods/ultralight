@@ -19,6 +19,6 @@ type ReturnValue = {
  * @param {Object} config Config object for useSWR
  * @returns {Object} {data: Projects[], add: name => Promise, remove: id => Promise}
  */
-export const useProjects = (userId: string | null | undefined): ReturnValue => {
+export const useProjects = (userId: string | null | undefined) => {
   return useCollection<ProjectData>(`Users/${userId}/Projects`)
 }
