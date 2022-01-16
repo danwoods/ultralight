@@ -40,7 +40,7 @@ type UseProjectsConfig = {
 export const useProjects = (config: UseProjectsConfig = {}) => {
   const { data, mutate } = useSWR<Project[]>(
     dbId,
-		// @ts-ignore
+    // @ts-ignore
     () => db.allDocs({ include_docs: true }).then(mapDocs),
     config
   )
@@ -52,7 +52,7 @@ export const useProjects = (config: UseProjectsConfig = {}) => {
         live: true,
         include_docs: true
       })
-		// @ts-ignore
+      // @ts-ignore
       .on('change', () => mutate(mapDocs))
 
     return () => changeListener.cancel()
@@ -64,7 +64,7 @@ export const useProjects = (config: UseProjectsConfig = {}) => {
    * @return {Promise<Project>} Created Project
    */
   const add = (name: string): Promise<Project> =>
-		// @ts-ignore
+    // @ts-ignore
     db.post({ ...defaultProject, name })
 
   /**
@@ -73,10 +73,10 @@ export const useProjects = (config: UseProjectsConfig = {}) => {
    * @return {Promise<Project[]>} Projects
    */
   const remove = (id: string) => {
-		// @ts-ignore
+    // @ts-ignore
     const doc = data.find((p: Project) => p._id === id)
 
-		// @ts-ignore
+    // @ts-ignore
     db.remove(doc).then(() => mutate())
   }
 
@@ -109,11 +109,11 @@ export const useProject = (id: string, config: UseProjectConfig = {}) => {
   }, [])
 
   const remove = () => {
-		// @ts-ignore
+    // @ts-ignore
     db.post({ ...data, _deleted: true }).then(mutate)
   }
 
-		// @ts-ignore
+  // @ts-ignore
   const update = (partial) => {
     db.post({ ...data, ...partial }).then((newProject) => {
       mutate()

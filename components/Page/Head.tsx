@@ -14,7 +14,7 @@ type Props = {
 export const Head = ({ title, description }: Props) => (
   <NextHead>
     <title>{title || TITLE}</title>
-    <meta name="description" content={description || DESCRIPTION} />
-    <link rel="icon" href="/favicon.ico" />
+    <meta name='description' content={description || DESCRIPTION} />
+    <link rel='icon' href='/favicon.ico' />
   </NextHead>
 )

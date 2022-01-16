@@ -24,7 +24,7 @@ export const getServerSideProps = async (context) => {
       keys: project.lists,
       include_docs: true
     })
-	// @ts-ignore
+    // @ts-ignore
     .then(mapDocs)
 
   return {
@@ -53,7 +53,7 @@ export default function Lists({
   project: ProjectType
   lists: ListType[]
 }): JSX.Element {
-	// @ts-ignore
+  // @ts-ignore
   const { data: project, addList } = useProject(initialProject.id, {
     initialData: initialProject
   })
@@ -105,13 +105,13 @@ export default function Lists({
 
       <footer className={styles.footer}>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          href='https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app'
+          target='_blank'
+          rel='noopener noreferrer'
         >
           Powered by{' '}
           <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image src='/vercel.svg' alt='Vercel Logo' width={72} height={16} />
           </span>
         </a>
       </footer>

@@ -34,15 +34,15 @@ export const List = forwardRef(
     },
     ref
   ) => {
-		// @ts-ignore
+    // @ts-ignore
     const { removeList } = useProject(projectId)
     const { data, addItem, removeItem, updateItemOrder } = useList(id)
-		// @ts-ignore
+    // @ts-ignore
     const { data: items, update } = useListItems(data?.items)
     const router = useRouter()
     const [curItems, setCurItems] = useState(null)
 
-		// @ts-ignore
+    // @ts-ignore
     const addNewItem = (name) => addItem(name)
 
     // When we add or remove items, the key on the useItems hook changes,
@@ -50,14 +50,14 @@ export const List = forwardRef(
     // flash. This prevents that.
     useEffect(() => {
       if (items) {
-		// @ts-ignore
+        // @ts-ignore
         setCurItems(items.filter(Boolean))
       }
     }, [items])
 
-		// @ts-ignore
+    // @ts-ignore
     const complete = curItems?.filter((i) => i.completed) || []
-		// @ts-ignore
+    // @ts-ignore
     const incomplete = curItems?.filter((i) => !i.completed) || []
     const numOfComplete: number = complete.length
     const numOfIncomplete: number = incomplete.length
@@ -70,13 +70,13 @@ export const List = forwardRef(
             titleIsLink ? (
               <Link href={`/projects/${projectId}/lists/${id}`} passHref={true}>
                 <a title={data.name}>
-                  <Typography variant="h5" component="h3">
+                  <Typography variant='h5' component='h3'>
                     {data.name}
                   </Typography>
                 </a>
               </Link>
             ) : (
-              <Typography variant="h5" component="h3">
+              <Typography variant='h5' component='h3'>
                 {data.name}
               </Typography>
             )
@@ -105,11 +105,11 @@ export const List = forwardRef(
           }
         />
         <CardContent style={{ paddingTop: 0 }}>
-					{ /* @ts-ignore */ }
+          {/* @ts-ignore */}
           <MUIList key={complete.map((c) => c._id).join('/')}>
             {curItems ? (
               <Items
-								// @ts-ignore
+                // @ts-ignore
                 items={curItems.filter((i) => !i.completed)}
                 update={(partial) => update(partial)}
                 updateItemOrder={(newOrder: string[]) =>
@@ -123,11 +123,11 @@ export const List = forwardRef(
           <CardActions>
             <NewItemForm create={addNewItem} />
           </CardActions>
-					{ /* @ts-ignore */ }
+          {/* @ts-ignore */}
           <MUIList key={incomplete.map((c) => c._id).join('/')}>
             {curItems ? (
               <Items
-								// @ts-ignore
+                // @ts-ignore
                 items={curItems.filter((i) => i.completed)}
                 update={(partial) => update(partial)}
                 updateItemOrder={(newOrder: string[]) =>
