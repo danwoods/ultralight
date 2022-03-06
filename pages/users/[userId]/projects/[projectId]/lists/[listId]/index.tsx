@@ -57,7 +57,7 @@ export const List = () => {
   const router = useRouter()
   const { projectId, listId } = router.query
   const { data: lists } = useLists(userId, String(projectId))
-  const { data: items, add, remove } = useListItems(
+  const { data: items, add, edit, remove } = useListItems(
     userId,
     String(projectId),
     String(listId)
@@ -65,16 +65,20 @@ export const List = () => {
 
   const list = lists.find((l) => l.id === listId)
 
+  const completedItems = items.filter((i) => i.isComplete)
+  const inCompletedItems = items.filter((i) => !i.isComplete)
+
   return (
     <div className={'bg-white shadow-md rounded-lg px-3 py-2 mb-4'}>
       <h1
         className={'block text-gray-700 text-lg font-semibold py-2 px-2'}
       >{`List: ${list?.name || ''}`}</h1>
       <ol className='py-3 text-sm'>
-        {items.sort(sortBySortOrder).map((l) => (
+        {inCompletedItems.sort(sortBySortOrder).map((l) => (
           <Item
             Item={l}
             key={l.id + l.sortOrder}
+            onComplete={(isComplete) => edit({ ...l, isComplete: isComplete })}
             onDelete={() => remove(l.id)}
           />
         ))}
@@ -90,6 +94,16 @@ export const List = () => {
           )
         }
       />
+      <ol className='py-3 text-sm'>
+        {completedItems.sort(sortBySortOrder).map((l) => (
+          <Item
+            Item={l}
+            key={l.id + l.sortOrder}
+            onComplete={(isComplete) => edit({ ...l, isComplete: isComplete })}
+            onDelete={() => remove(l.id)}
+          />
+        ))}
+      </ol>
     </div>
   )
 }

@@ -8,7 +8,9 @@
     "pull:envVars": "vercel env pull",
     "start": "next start",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
@@ -27,6 +29,11 @@
     "victory": "^35.6.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@storybook/addon-actions": "^6.4.13",
+    "@storybook/addon-essentials": "^6.4.13",
+    "@storybook/addon-links": "^6.4.13",
+    "@storybook/react": "^6.4.13",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@types/classnames": "^2.3.1",
@@ -35,6 +42,7 @@
     "@types/react": "^17.0.4",
     "@types/react-beautiful-dnd": "^13.0.0",
     "autoprefixer": "^10.4.0",
+    "babel-loader": "^8.2.3",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
     "lint-staged": "^12.1.7",
