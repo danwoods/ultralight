@@ -36,6 +36,7 @@ const mapDocs = <Data extends DocumentData>(
 type UseCollectionReturnValue<CollectionData> = {
   data: CollectionData[]
   add: (arg0: Omit<CollectionData, 'id'>) => Promise<CollectionData>
+  edit: (arg0: CollectionData) => Promise<CollectionData>
   remove: (arg0: string) => Promise<void>
 }
 
@@ -142,6 +143,21 @@ export const useCollection = <CollectionData extends DocumentData>(
     }
   }
 
+  // Edit ///////////////////////////////////////////////////////////////////
+
+  /**
+   * Edit an item in a collection
+   * @param {string} docId Document ID to remove
+   * @returns {Promise<undefined>}
+   */
+  const edit = (updatedDoc) => {
+    const db = getFirestore()
+    // @ts-ignore
+    return updateDoc(doc(db, id, updatedDoc.id), updatedDoc).then(() => {
+      setFlipBit(!flipBit)
+    })
+  }
+
   // Remove ///////////////////////////////////////////////////////////////////
 
   /**
@@ -159,8 +175,8 @@ export const useCollection = <CollectionData extends DocumentData>(
 
   return {
     data: documents,
-    // @ts-ignore
     add,
+    edit,
     remove
   }
 }

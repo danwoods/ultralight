@@ -27,11 +27,6 @@ export const createItem = (
   parentId: item.parentId || ''
 })
 
-type Props = {
-  onDelete: () => void
-  Item: ListItem
-}
-
 const classes = {
   root: `
     flex
@@ -51,18 +46,31 @@ const classes = {
   `
 }
 
-export const Item = (props: Props) => {
+type Props = {
+  onDelete: () => any
+  onComplete: (isComplete: boolean) => any
+  Item: ListItem
+}
+
+/**
+ * Single List Item
+ * @param props Component properties
+ * @returns {JSX.Element}
+ */
+export const Item = ({ Item = createItem(), onComplete }: Props) => {
   return (
     <li className={classes.root}>
       <input
         type={'checkbox'}
-        id={`listItem_${props.Item.id}_isComplete_input`}
-        name={`listItem_${props.Item.id}_isComplete_input`}
-        title={`Mark item ${props.Item.name} ${
-          props.Item.isComplete ? 'undone' : 'done'
+        id={`listItem_${Item.id}_isComplete_input`}
+        name={`listItem_${Item.id}_isComplete_input`}
+        title={`Mark item "${Item.name}" ${
+          Item.isComplete ? 'undone' : 'done'
         }`}
+        onClick={() => onComplete(!Item.isComplete)}
+        checked={Item.isComplete}
       />
-      <span className={classes.label}>{props.Item.name}</span>
+      <span className={classes.label}>{Item.name}</span>
     </li>
   )
 }
