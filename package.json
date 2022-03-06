@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build-storybook": "build-storybook",
     "dev": "next dev",
+    "format": "prettier --write '**/*.{ts,tsx,js,jsx,json,md,mdx}'",
+    "prepare": "husky install",
     "pull:envVars": "vercel env pull",
     "start": "next start",
-    "test": "jest",
-    "prepare": "husky install",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "test": "jest",
+    "types:check": "tsc"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
@@ -43,7 +45,7 @@
     "@types/react-beautiful-dnd": "^13.0.0",
     "autoprefixer": "^10.4.0",
     "babel-loader": "^8.2.3",
-    "husky": "^7.0.4",
+    "husky": "^7.0.0",
     "jest": "^27.4.7",
     "lint-staged": "^12.1.7",
     "postcss": "^8.3.11",
@@ -52,6 +54,6 @@
     "typescript": "^4.2.4"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{ts,tsx,js,jsx,json,md,mdx}": "prettier --write"
   }
 }
