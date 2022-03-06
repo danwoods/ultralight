@@ -57,6 +57,7 @@ type Props = {
  * @param props Component properties
  * @returns {JSX.Element}
  */
+// @ts-ignore
 export const Item = ({ Item = createItem(), onComplete }: Props) => {
   return (
     <li className={classes.root}>
