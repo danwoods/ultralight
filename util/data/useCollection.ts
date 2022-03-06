@@ -150,6 +150,7 @@ export const useCollection = <CollectionData extends DocumentData>(
    * @param {string} docId Document ID to remove
    * @returns {Promise<undefined>}
    */
+  // @ts-ignore
   const edit = (updatedDoc) => {
     const db = getFirestore()
     // @ts-ignore
@@ -175,7 +176,9 @@ export const useCollection = <CollectionData extends DocumentData>(
 
   return {
     data: documents,
+    // @ts-ignore
     add,
+    // @ts-ignore
     edit,
     remove
   }
